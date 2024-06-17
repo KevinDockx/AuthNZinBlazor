@@ -60,8 +60,8 @@ builder.Services.AddAuthentication(options =>
     oidcOptions.Scope.Add("offline_access");
     //oidcOptions.CallbackPath = new PathString("/signin-oidc");
     //oidcOptions.SignedOutCallbackPath = new PathString("/signout-callback-oidc");
-    //oidcOptions.ClientId = "3b2f51e7-ea7d-4a0f-931f-87e98e6b022e";
-    //oidcOptions.ClientSecret = "Bwd8Q~N5ngKp-qZveD0Wgu5A8UmsGqb6WoyJBaUf";
+    //oidcOptions.ClientId = "input-your-client-id-here";
+    //oidcOptions.ClientSecret = "input-your-secret-here";
     oidcOptions.MapInboundClaims = false;
     oidcOptions.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
     oidcOptions.TokenValidationParameters.RoleClaimType = "role";
