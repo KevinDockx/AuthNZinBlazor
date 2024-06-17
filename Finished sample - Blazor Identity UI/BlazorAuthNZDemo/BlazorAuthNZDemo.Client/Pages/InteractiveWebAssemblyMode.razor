@@ -1,0 +1,81 @@
+﻿@page "/interactivewebassemblymode"
+@rendermode InteractiveWebAssembly
+
+@using BlazorAuthNZDemo.Client.Models
+@using BlazorAuthNZDemo.Client.Services
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+
+<h3>This component is rendered with <b>interactive WebAssembly (client-side) rendering</b></h3>
+
+<button class="btn btn-primary" @onclick="CallLocalAPIAsync">Call local API</button>
+<button class="btn btn-primary" @onclick="CallRemoteAPIAsync">Call remote API</button>
+<button class="btn btn-primary" @onclick="LoadAuthenticationStateAsync">Load user</button>
+
+@if (bands == null)
+{
+    <p><em>No results from API calls yet...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var band in bands)
+            {
+                <tr>
+                    <td>@band.Id</td>
+                    <td>@band.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p>@authMessage</p>
+
+@code {
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    private List<Band>? bands; 
+    private string? authMessage;
+
+    private async Task LoadAuthenticationStateAsync()
+    {
+        var authState = await AuthenticationStateProvider
+            .GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            authMessage = $"{user.Identity.Name} is authenticated.";
+        }
+        else
+        {
+            authMessage = "The user is not authenticated.";
+        }
+    }
+
+
+    private async Task CallLocalAPIAsync()
+    {
+        bands = (await _apiService.CallLocalApiAsync())
+            .ToList();
+    } 
+
+    private async Task CallRemoteAPIAsync()
+    {
+        bands = (await _apiService.CallRemoteApiAsync())
+            .ToList();
+    } 
+}
